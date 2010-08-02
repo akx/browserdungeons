@@ -1,5 +1,5 @@
 import glob, os
-coreJs = ["underscore.js", "cobra.js", "classes.js", "util.js"]
+coreJs = ["underscore.js", "Base.js", "classes.js", "util.js"]
 skipJs = ["tiledata.js"]
 otherJs = sorted(set(f for f in glob.glob("*.js") if f[0] != "_") - set(coreJs) - set(skipJs))
 allJs = coreJs + otherJs
