@@ -1,11 +1,21 @@
-import glob, os
+import glob, os, sys
+compilerJars = (
+	r"\dev\compiler.jar",
+	r"c:\utils\closure-compiler.jar",
+)
+for compiler in compilerJars:
+	if os.path.exists(compiler):
+		break
+else:
+	print "No closure compiler found. Dying."
+	sys.exit(1)
 coreJs = ["underscore.js", "Base.js", "classes.js", "util.js"]
 skipJs = ["tiledata.js"]
 finalJs = ["game.js"]
 otherJs = sorted(set(f for f in glob.glob("*.js") if f[0] != "_") - set(coreJs) - set(skipJs) - set(finalJs))
 allJs = coreJs + otherJs + finalJs
 jsSize = sum(os.stat(f).st_size for f in allJs)
-cmdLine = ["java -jar \\dev\\compiler.jar"]
+cmdLine = ["java -jar %s" % compiler]
 for js in allJs:
 	cmdLine.append("--js %s" % js)
 cmdLine.append("--js_output_file _compiled.js")

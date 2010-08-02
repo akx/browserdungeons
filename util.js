@@ -16,6 +16,19 @@ function log(message) {
 	if(window.console && window.console.log) console.log.apply(null, args);
 }
 
+function spliceMatching(arr, matcher) {
+	if(!_.isArray(arr)) {
+		throw "Trying to splice non-array " + arr.toString() + ". C'mon.";
+	}
+	for(var i = 0; i < arr.length; i++) {
+		if(matcher(arr[i], i)) {
+			arr.splice(i, 1);
+			i --;
+			continue;
+		}
+	}
+}
+
 function str_repeat(i, m) { for (var o = []; m > 0; o[--m] = i){} return(o.join('')); }
 
 /**

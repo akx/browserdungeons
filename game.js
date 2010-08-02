@@ -1,9 +1,7 @@
 //if(!window.console) window.console = {log: function(){}};
 var canvas, ctx;
 var level;
-var chars = [];
 var hero = new Hero();
-var pickups = [];
 var actions = {
 	"move se":	function(){return moveHero(+1,+1)},
 	"move s":	function(){return moveHero(+0,+1)},
@@ -61,7 +59,18 @@ function moveHero(dx, dy) {
 	}
 }
 
+function _underHero(p) {
+	return (p.x == hero.x && p.y == hero.y);
+}
+
 function update() {
+	var pickupUnderHero = _.detect(level.pickups, _underHero);
+	if(pickupUnderHero) {
+		if(pickupUnderHero.canAutoPickup) {
+			pickupUnderHero.onPickup(hero);
+			level.remove(pickupUnderHero);
+		}
+	}
 	for(var xx = -1; xx <= 1; xx++) {
 		for(var yy = -1; yy <= 1; yy++) {
 			if(level.discover(hero.x + xx, hero.y + yy)) {
@@ -112,7 +121,7 @@ function addMessage(message) {
 	var logDiv = document.getElementById("log");
 	var msgDiv = document.createElement("div");
 	var nao = new Date;
-	msgDiv.innerHTML = sprintf("[%02d:%02d:%02d]: %s", nao.getHours(), nao.getMinutes(), nao.getSeconds(), message);
+	msgDiv.innerHTML = sprintf("<small>%02d:%02d:%02d.</small> %s", nao.getHours(), nao.getMinutes(), nao.getSeconds(), message);
 	logDiv.appendChild(msgDiv);
 	logDiv.scrollTop += 900;
 }

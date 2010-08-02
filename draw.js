@@ -47,7 +47,7 @@ function initDraw() {
 	
 }
 
-function drawVertBar(x0, y0, w, h, filled, fillStyle, strokeStyle, bgStyle) {
+function drawVertBar(x0, y0, w, h, filled, fillStyle, strokeStyle, bgStyle, counter) {
 	if(bgStyle) {
 		ctx.fillStyle = bgStyle;
 		ctx.fillRect(x0, y0, w, h);
@@ -58,6 +58,13 @@ function drawVertBar(x0, y0, w, h, filled, fillStyle, strokeStyle, bgStyle) {
 	ctx.strokeStyle = strokeStyle;
 	ctx.lineWidth = 1;
 	ctx.strokeRect(x0, y0, w, h);
+	if(counter !== undefined) {
+		ctx.font = "15px Georgia";
+		ctx.textBaseline = "alphabetic";
+		ctx.textAlign = "center";
+		ctx.fillStyle = "#FFF";
+		ctx.fillText(counter.toString(), x0 + w * .5, y0 + h - 5);
+	}
 }
 
 function drawSlot(slot) {
@@ -67,6 +74,7 @@ function drawSlot(slot) {
 	ctx.strokeRect(0, 0, 60, 70);
 	ctx.font = "20px Georgia";
 	ctx.textBaseline = "alphabetic";
+	ctx.textAlign = "left";
 	ctx.fillStyle = (slot.item ? "#FFF" : "#666");
 	ctx.fillText(slot.id, 3, 63);
 }
@@ -78,9 +86,9 @@ function drawStatus() {
 	ctx.translate(0, 20 * level.h);
 	ctx.fillStyle = statusBarGradient;
 	ctx.fillRect(0, 0, 400, 80);
-	drawVertBar(5, 5, 15, 70, hero.health / hero.maxHealth, healthGradient, "#c44d58", "#3F0304");
-	drawVertBar(22, 5, 15, 70, hero.mana / hero.maxMana, manaGradient, "#489FFF", "#021133");
-	drawVertBar(39, 5, 15, 70, hero.xp / hero.levelXp, xpGradient, "#EC6704", "#200E00");
+	drawVertBar(5, 5, 15, 70, hero.health / hero.maxHealth, healthGradient, "#c44d58", "#3F0304", hero.healthPotions);
+	drawVertBar(22, 5, 15, 70, hero.mana / hero.maxMana, manaGradient, "#489FFF", "#021133", hero.manaPotions);
+	drawVertBar(39, 5, 15, 70, hero.xp / hero.levelXp, xpGradient, "#EC6704", "#200E00", hero.level);
 	
 	_.each(hero.slots, function(slot) {
 		ctx.save();
@@ -90,6 +98,10 @@ function drawStatus() {
 	});
 	
 	ctx.restore();
+}
+
+function _drawObj(obj) {
+	if(level.isDiscovered(obj.x, obj.y)) obj.draw();
 }
 
 function drawLevel() {
@@ -116,6 +128,8 @@ function drawLevel() {
 			ctx.fillRect(cx, cy, 20, 20);
 		}
 	}
+	_.each(level.pickups, _drawObj);
+	_.each(level.chars, _drawObj);
 	hero.draw();
 }
 
