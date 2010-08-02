@@ -14,3 +14,7 @@ body {
 #log div {
 	margin-bottom:1em
 }
+#game.doublesize {
+	image-rendering: -moz-crisp-edges;
+	width: 800px
+}
