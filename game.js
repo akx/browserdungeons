@@ -78,6 +78,7 @@ function youDie() {
 		),
 		"Aherm... you sort of kicked the bucket there. Better luck next time, eh?"
 	);
+	addMessage("Care for another try? <a href=\"#\" onclick=\"startGame();return false\">Click-clickety-click!</a>");
 	
 }
 
@@ -150,6 +151,8 @@ function update() {
 		for(var yy = -1; yy <= 1; yy++) {
 			if(level.discover(hero.x + xx, hero.y + yy)) {
 				hero.xp ++;
+				hero.addHealth(1);
+				hero.addMana(.5);
 			}
 		}
 	}

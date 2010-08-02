@@ -27,17 +27,20 @@ var Character = LevelObj.extend({
 		}
 	},
 	addHealth: function(hp) {
-		this.health = 0 | Math.min(this.maxHealth, this.health + hp);
+		this.health = Math.floor(Math.min(this.maxHealth, this.health + hp));
 	},
 	addMana: function(mp) {
-		this.mana = 0 | Math.min(this.maxMana, this.mana + mp);
+		this.mana = Math.floor(Math.min(this.maxMana, this.mana + mp));
+	},
+	addXp: function(xp) {
+		this.xp += xp;
 	},
 	
 	dealDamage: function(amount, type) {
 		if(type == "magic") amount *= (1.0 - this.magicResist);
 		else if(type == "physical") amount *= (1.0 - this.physicalResist);
 		else throw "Hissy fit: Damage type " + type + " unknown.";
-		this.health = Math.max(this.health - amount, 0);
+		this.health = Math.floor(Math.max(this.health - amount, 0));
 		return amount;
 	},
 	
