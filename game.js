@@ -4,19 +4,35 @@ var level;
 var chars = [];
 var hero = new Hero();
 var pickups = [];
+var actions = {
+	"move se":	function(){return moveHero(+1,+1)},
+	"move s":	function(){return moveHero(+0,+1)},
+	"move sw":	function(){return moveHero(-1,+1)},
+	"move w":	function(){return moveHero(-1,+0)},
+	"action":	function(){return action()},
+	"move e":	function(){return moveHero(+1,+0)},
+	"move nw":	function(){return moveHero(-1,-1)},
+	"move n":	function(){return moveHero(+0,-1)},
+	"move ne":	function(){return moveHero(+1,-1)},
+	"null":		null
+};
 var keymap = {
-	99:		function(){return moveHero(+1,+1)}, // kp3
-	98:		function(){return moveHero(+0,+1)}, // kp2
-	97:		function(){return moveHero(-1,+1)}, // kp1
-	100:	function(){return moveHero(-1,+0)}, // kp4
-	101:	function(){return action()}, // kp5
-	102:	function(){return moveHero(+1,+0)}, // kp6
-	103:	function(){return moveHero(-1,-1)}, // kp7
-	104:	function(){return moveHero(+0,-1)}, // kp8
-	105:	function(){return moveHero(+1,-1)}, // kp9
-	
+	99:		"move se", // kp3
+	98:		"move s", // kp2
+	97:		"move sw", // kp1
+	100:	"move w", // kp4
+	101:	"action", // kp5
+	102:	"move e", // kp6
+	103:	"move nw", // kp7
+	104:	"move n", // kp8
+	105:	"move ne", // kp9
+	49:		"slot 1", // num1
+	50:		"slot 2", // num2
+	51:		"slot 3", // num3
+	52:		"slot 4", // num4
+	53:		"slot 5", // num3
 	0:		null
-}
+};
 
 function newLevel() {
 	level = new Level();
@@ -46,35 +62,39 @@ function moveHero(dx, dy) {
 }
 
 function update() {
-	for(var xx = -1; xx <= 1; xx++)for(var yy = -1; yy <= 1; yy++)level.discover(hero.x + xx, hero.y + yy);
-}
-
-function draw() {
-	for(var y = 0; y < level.h; y ++) {
-		var cy = y * 20;
-		for(var x = 0; x < level.w; x ++) {
-			var cx = x * 20;
-			var dst = Math.sqrt((x - hero.x) * (x - hero.x) + (y - hero.y) * (y - hero.y));
-			var disc = level.isDiscovered(x, y);
-			if(!disc) {
-				var light = Math.max(0, 0 | (32 - dst * 2));
-				ctx.fillStyle = "rgb("+light+","+light+","+light+")";
-				ctx.fillRect(cx, cy, 20, 20);
-				continue;
-			} else {
-				var tile = level.get(x, y);
-				ctx.drawImage((tile == 0 ? tiles.Dirt : tiles.Wall), cx, cy);
+	for(var xx = -1; xx <= 1; xx++) {
+		for(var yy = -1; yy <= 1; yy++) {
+			if(level.discover(hero.x + xx, hero.y + yy)) {
+				hero.xp ++;
 			}
-			ctx.fillStyle = "rgba(0,0,0," + Math.min(0.7, dst * .05) + ")";
-			ctx.fillRect(cx, cy, 20, 20);
 		}
 	}
-	hero.draw();
+	if(hero.xp >= hero.levelXp) {
+		hero.levelUp();
+		addMessage(
+			sprintf(rndc(
+				"You feel %s stronger. Welcome to level %d!",
+				"You feel %s smarter. Welcome to level %d!",
+				"You feel %s prettier. Welcome to level %d!",
+				"You feel %s more awesome. Welcome to level %d!"
+			), rndc(
+				"a little bit",
+				"somewhat",
+				"a teensy weensy bit",
+				"much",
+				"awesomely"
+			), hero.level) +
+			" " +
+			sprintf("You're going to need %d XP to get to level %d.", hero.levelXp, hero.level + 1)
+		);
+	}
 }
 
 function keyPress(evt) {
 	var key = evt.keyCode;
-	var func = keymap[key];
+	var action = keymap[key];
+	log("Key:", key, "mapped to:", action);
+	var func = actions[action];
 	if(func) func();
 }
 
@@ -85,7 +105,7 @@ function startGame() {
 }
 
 function addRandomMessage() {
-	addMessage(arguments[irnd(0, arguments.length)]);
+	addMessage(rndc.apply(null, arguments));
 }
 
 function addMessage(message) {
@@ -94,7 +114,7 @@ function addMessage(message) {
 	var nao = new Date;
 	msgDiv.innerHTML = sprintf("[%02d:%02d:%02d]: %s", nao.getHours(), nao.getMinutes(), nao.getSeconds(), message);
 	logDiv.appendChild(msgDiv);
-	logDiv.scrollTop = 9000;
+	logDiv.scrollTop += 900;
 }
 
 function init() {
