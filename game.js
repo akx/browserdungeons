@@ -54,7 +54,7 @@ function fight(p1, p2) {
 		var dmgType = attacker.getDamageType();
 		var dmgTaken = defender.dealDamage(dmg, dmgType);
 		var msg = sprintf(
-			"The %s %s the %s for <u>%d</u> damage!",
+			"The %s %s the %s for <u>%d</u> %s damage!",
 			attacker.name,
 			rndc("thwonks", "zaps", "hits", "smashes", "bonks", "splats"),
 			defender.name,
@@ -98,7 +98,8 @@ function moveHero(dx, dy) {
 	if(character) {
 		fight(hero, character);
 		if(character.health < 1) {
-			var xpGain = character.level + (Math.max(0, character.level - hero.level) * 3);
+			level.add(new BloodDoodad().placeAt(character));
+			var xpGain = Math.ceil((character.level + (Math.max(0, character.level - hero.level) + 1) * 3) * 18.773);
 			addMessage("The " + character.name + " is " + rndc("dead", "vanquished", "smashed into tiny bits", "an icky pool on the floor", "mush") + "! Hooray! The hero (that's you) gains <u>" + xpGain + "</u> XP!");
 			if(hero.health <= 0) {
 				addMessage("Second wind! (You almost died there...)");

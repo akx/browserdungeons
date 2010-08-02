@@ -7,9 +7,6 @@ var Pickup = LevelObj.extend({
 		this.base();
 	},
 	
-	draw: function() {
-		ctx.drawImage(tiles[this.tileName], this.screenX(), this.screenY());
-	},
 	
 	onPickup: function(picker) {
 		

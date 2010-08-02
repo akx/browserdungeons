@@ -7,6 +7,7 @@ var Level = Base.extend({
 	clear: function() {
 		this.data = {};
 		this.discovered = {};
+		this.doodads = [];
 		this.pickups = [];
 		this.chars = [];
 	},
@@ -46,7 +47,7 @@ var Level = Base.extend({
 			this.placeRandomly(this.add(new HealthPotion));
 			this.placeRandomly(this.add(new ManaPotion));
 		}
-		var enemyClasses = [Imp];
+		var enemyClasses = [Imp, Warlock];
 		for(var level = 1; level < 9; level ++) {
 			var n = Math.max(1, (9 - level) / 2 + 1);
 			for(var i = 0; i < n; i++) {
@@ -88,14 +89,19 @@ var Level = Base.extend({
 			this.chars.push(levelObj);
 			return levelObj;
 		}
+		else if(levelObj.kind === "Doodad") {
+			this.doodads.push(levelObj);
+			return levelObj;
+		}
 		throw "Unknown kind of levelobj: " + (levelObj.kind.toString());
 	},
 	
 	remove: function(levelObj) {
 		var eq = function(obj) { return obj === levelObj; };
 		if(levelObj.kind === "Pickup") return spliceMatching(this.pickups, eq);
-		if(levelObj.kind === "Enemy") return spliceMatching(this.chars, eq);
-		return null;
+		else if(levelObj.kind === "Enemy") return spliceMatching(this.chars, eq);
+		else if(levelObj.kind === "Doodad") return spliceMatching(this.doodads, eq);
+		else return null;
 	},
 	
 	setAllDiscovered: function() {
