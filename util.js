@@ -1,5 +1,24 @@
+var marV = 362436069;
+var marU = 521288629;
+
+function MSeed(s) {
+	s = 0 | s;
+	marV = (s >> 16) & 0xFFFF;
+	marU = s & 0xFFFF;
+}
+
+function Marsaglia() {
+	marV = 36969 * (marV & 65535) + (marV >> 16);
+	marU = 18000 * (marU & 65535) + (marU >> 16);
+	return (marV << 16) + (marU & 65535);
+}
+
+function MarsagliaF() {
+	return Math.abs(Marsaglia() / 2147483648.0);
+}
+
 function rnd(a, b) {
-	return Math.random() * (b - a) + a;
+	return MarsagliaF() * (b - a) + a;
 }
 
 function irnd(a, b) {

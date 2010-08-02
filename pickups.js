@@ -14,34 +14,33 @@ var Pickup = LevelObj.extend({
 	onPickup: function(picker) {
 		
 	}
-}, {
-	kind:	"Pickup",
 });
 
 var HealthPotion = Pickup.extend({
-		canAutoPickup:	true,
-		tileName:		"HealthPotion",
-		
-		onPickup: function(picker) {
-			picker.healthPotions ++;
-			picker.xp += 10;
-			addRandomMessage(
-				"You found a healthy, delicious health potion. Now with added Vitamin D.",
-				"Ooohh! A health potion! AWESOME!"
-			);
-		}
+	canAutoPickup:	true,
+	tileName:		"HealthPotion",
+	
+	onPickup: function(picker) {
+		picker.healthPotions ++;
+		picker.xp += 10;
+		addRandomMessage(
+			"You found a healthy, delicious health potion. Now with added Vitamin D.",
+			"Ooohh! A health potion! AWESOME!",
+			"That's either a strawberry or a troll tooth floating around in that potion."
+		);
+	}
 });
 
 var ManaPotion = Pickup.extend({
-		canAutoPickup:	true,
-		tileName:		"ManaPotion",
-		
-		onPickup: function(picker) {
-			picker.manaPotions ++;
-			picker.xp += 10;
-			addRandomMessage(
-				"Mana mana. (Do dooh, do do doh.)",
-				"Another phial full of mhystical phower!"
-			);
-		}
+	canAutoPickup:	true,
+	tileName:		"ManaPotion",
+	
+	onPickup: function(picker) {
+		picker.manaPotions ++;
+		picker.xp += 10;
+		addRandomMessage(
+			"Mana mana. (Do dooh, do do doh.)",
+			"Another phial full of mhystical phower!"
+		);
+	}
 });

@@ -9,12 +9,6 @@
 (function() {
   // ------------------------- Baseline setup ---------------------------------
 
-  // Establish the root object, "window" in the browser, or "global" on the server.
-  var root = this;
-
-  // Save the previous value of the "_" variable.
-  var previousUnderscore = root._;
-
   // Establish the object that gets thrown to break out of a loop iteration.
   var breaker = typeof StopIteration !== 'undefined' ? StopIteration : '__break__';
 
@@ -52,7 +46,7 @@
   if (typeof exports !== 'undefined') exports._ = _;
 
   // Export underscore to global scope.
-  root._ = _;
+  window["_"] = _;
 
   // Current version.
   _.VERSION = '1.0.4';
@@ -569,13 +563,6 @@
   };
 
   // -------------------------- Utility Functions: ----------------------------
-
-  // Run Underscore.js in noConflict mode, returning the '_' variable to its
-  // previous owner. Returns a reference to the Underscore object.
-  _.noConflict = function() {
-    root._ = previousUnderscore;
-    return this;
-  };
 
   // Keep the identity function around for default iterators.
   _.identity = function(value) {

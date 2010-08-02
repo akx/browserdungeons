@@ -4,11 +4,19 @@ var statusBarGradient;
 var healthGradient;
 var manaGradient;
 var xpGradient;
+var font = '"warnock pro", palatino, "palatino linotype", georgia';
 
 function linearGradient(x0, y0, x1, y1, stop, color) {
 	var grad = ctx.createLinearGradient(x0, y0, x1, y1);
 	for(var i = 4; i < arguments.length; i += 2) grad.addColorStop(arguments[i], arguments[i+1]);
 	return grad;
+}
+
+function setFont(size, baseline, align, fillStyle, fontOverride, variant) {
+	ctx.font = (variant ? variant + " " : "") + size + "px " + (fontOverride || font);
+	ctx.textBaseline = baseline || "alphabetic";
+	ctx.textAlign = align || "left";
+	if(fillStyle) ctx.fillStyle = fillStyle;
 }
 
 function initDraw() {
@@ -47,7 +55,9 @@ function initDraw() {
 	
 }
 
-function drawVertBar(x0, y0, w, h, filled, fillStyle, strokeStyle, bgStyle, counter) {
+
+
+function drawVertBar(x0, y0, w, h, filled, fillStyle, strokeStyle, bgStyle, counter, label) {
 	if(bgStyle) {
 		ctx.fillStyle = bgStyle;
 		ctx.fillRect(x0, y0, w, h);
@@ -59,11 +69,12 @@ function drawVertBar(x0, y0, w, h, filled, fillStyle, strokeStyle, bgStyle, coun
 	ctx.lineWidth = 1;
 	ctx.strokeRect(x0, y0, w, h);
 	if(counter !== undefined) {
-		ctx.font = "15px Georgia";
-		ctx.textBaseline = "alphabetic";
-		ctx.textAlign = "center";
-		ctx.fillStyle = "#FFF";
+		setFont(15, null, "center", "#FFF");
 		ctx.fillText(counter.toString(), x0 + w * .5, y0 + h - 5);
+	}
+	if(label !== undefined) {
+		setFont(12, null, "center", "#FFF");
+		ctx.fillText(label.toString(), x0 + w * .5, y0 + 13);
 	}
 }
 
@@ -72,10 +83,10 @@ function drawSlot(slot) {
 	ctx.fillRect(0, 0, 60, 70);
 	ctx.strokeStyle = "#FFF";
 	ctx.strokeRect(0, 0, 60, 70);
-	ctx.font = "20px Georgia";
+	ctx.font = "20px " + font;
 	ctx.textBaseline = "alphabetic";
 	ctx.textAlign = "left";
-	ctx.fillStyle = (slot.item ? "#FFF" : "#666");
+	ctx.fillStyle = (slot.item ? "#FFF" : (pickupUnderHero ? "#FFD" : "#666"));
 	ctx.fillText(slot.id, 3, 63);
 }
 
@@ -86,8 +97,8 @@ function drawStatus() {
 	ctx.translate(0, 20 * level.h);
 	ctx.fillStyle = statusBarGradient;
 	ctx.fillRect(0, 0, 400, 80);
-	drawVertBar(5, 5, 15, 70, hero.health / hero.maxHealth, healthGradient, "#c44d58", "#3F0304", hero.healthPotions);
-	drawVertBar(22, 5, 15, 70, hero.mana / hero.maxMana, manaGradient, "#489FFF", "#021133", hero.manaPotions);
+	drawVertBar(5, 5, 15, 70, hero.health / hero.maxHealth, healthGradient, "#c44d58", "#3F0304", hero.healthPotions, "H");
+	drawVertBar(22, 5, 15, 70, hero.mana / hero.maxMana, manaGradient, "#489FFF", "#021133", hero.manaPotions, "M");
 	drawVertBar(39, 5, 15, 70, hero.xp / hero.levelXp, xpGradient, "#EC6704", "#200E00", hero.level);
 	
 	_.each(hero.slots, function(slot) {
