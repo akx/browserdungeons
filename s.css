@@ -9,8 +9,8 @@ body {
 	height:400px;
 	overflow-x:auto;
 	overflow-y:scroll;
+	padding:2px
 }
 #log div {
 	margin-bottom:1em
 }
-#game{border:1px dotted white}

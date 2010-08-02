@@ -7,9 +7,13 @@ function irnd(a, b) {
 	return Math.floor(rnd(a, b));
 }
 
+function rndc(any_number_of_arguments) {
+	return arguments[irnd(0, arguments.length)];
+}
+
 function log(message) {
 	var args = arguments;
-	console.log.apply(null, args);
+	if(window.console && window.console.log) console.log.apply(null, args);
 }
 
 function str_repeat(i, m) { for (var o = []; m > 0; o[--m] = i){} return(o.join('')); }
