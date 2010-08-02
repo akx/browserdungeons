@@ -69,10 +69,10 @@ var raceAdjs = {
 var Hero = Character.extend({
 	constructor: function() {
 		this.base();
-		this.klass = rndc.apply(null, HERO_CLASSES);
+		var k = this.klass = rndc.apply(null, HERO_CLASSES);
 		this.race = rndc.apply(null, HERO_RACES);
-		this.tileName = "Hero" + this.klass.charAt(0).toUpperCase() + this.klass.substring(1);
-		this.nSlots = (this.klass == "wizard" ? 5 : 4);
+		this.tileName = "Hero" + k.charAt(0).toUpperCase() + k.substring(1);
+		this.nSlots = (k == "wizard" ? 5 : 4);
 		this.slots = [];
 		for(var i = 0; i < this.nSlots; i++) this.slots.push({id: i + 1, item: null});
 		this.calculateLevelXp();
