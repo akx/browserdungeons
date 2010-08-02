@@ -1,7 +1,7 @@
-//if(!window.console) window.console = {log: function(){}};
 var canvas, ctx;
 var level;
 var hero;
+var debug;
 var actions = {
 	"move se":	function(){return moveHero(+1,+1)},
 	"move s":	function(){return moveHero(+0,+1)},
@@ -63,7 +63,7 @@ function fight(p1, p2) {
 		);
 		addMessage(msg);
 	});
-	addMessage(sprintf("(%s HP: %d, %s HP: %d)", p1.name, p1.health, p2.name, p2.health));
+	//addMessage(sprintf("(%s HP: %d, %s HP: %d)", p1.name, p1.health, p2.name, p2.health));
 }
 
 function youDie() {
@@ -123,7 +123,8 @@ function moveHero(dx, dy) {
 			"You have to be a ghost to walk through walls. It's easier to become one than you think, though...",
 			"Fighting a wall? Clever.",
 			"That's not a monster, that's a wall.",
-			"Uh... tried casting the \"remove wall\" spell <i>first</i>?"
+			"Uh... tried casting the \"remove wall\" spell <i>first</i>?",
+			"A splendid idea! ... It just doesn't work."
 		);
 	}
 }
