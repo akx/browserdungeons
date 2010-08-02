@@ -54,15 +54,19 @@ function draw() {
 		var cy = y * 20;
 		for(var x = 0; x < level.w; x ++) {
 			var cx = x * 20;
-			if(!level.isDiscovered(x, y)) {
-				var dst = Math.sqrt((x - hero.x) * (x - hero.x) + (y - hero.y) * (y - hero.y));
-				var light = Math.max(0, 0 | (64 - dst * 5));
+			var dst = Math.sqrt((x - hero.x) * (x - hero.x) + (y - hero.y) * (y - hero.y));
+			var disc = level.isDiscovered(x, y);
+			if(!disc) {
+				var light = Math.max(0, 0 | (32 - dst * 2));
 				ctx.fillStyle = "rgb("+light+","+light+","+light+")";
 				ctx.fillRect(cx, cy, 20, 20);
 				continue;
+			} else {
+				var tile = level.get(x, y);
+				ctx.drawImage((tile == 0 ? tiles.Dirt : tiles.Wall), cx, cy);
 			}
-			var tile = level.get(x, y);
-			ctx.drawImage((tile == 0 ? tiles.Dirt : tiles.Wall), cx, cy);
+			ctx.fillStyle = "rgba(0,0,0," + Math.min(0.7, dst * .05) + ")";
+			ctx.fillRect(cx, cy, 20, 20);
 		}
 	}
 	hero.draw();
