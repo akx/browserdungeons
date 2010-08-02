@@ -14,6 +14,8 @@ var keymap = {
 	103:	function(){return moveHero(-1,-1)}, // kp7
 	104:	function(){return moveHero(+0,-1)}, // kp8
 	105:	function(){return moveHero(+1,-1)}, // kp9
+	
+	0:		null
 }
 
 function newLevel() {
