@@ -1,81 +1,74 @@
-Cobra.install();
-
-var Level = new Class({
-	__init__: function(self) {
-		self.w = 20;
-		self.h = 20;
-		self.clear();
+var Level = Base.extend({
+	constructor: function() {
+		this.w = 20;
+		this.h = 20;
+		this.clear();
 	},
-	clear: function(self) {
-		self.data = {};
+	clear: function() {
+		this.data = {};
 	},
-	_get: function(self, kind, x, y) {
-		if(y<0||x<0||y>self.h||x>self.w) return 0;
+	_get: function(kind, x, y) {
+		if(y<0||x<0||y>this.h||x>this.w) return 0;
 		x = 0 | x; y = 0 | y;
-		return (self[kind][y * self.w + x] || 0);
+		return (this[kind][y * this.w + x] || 0);
 	},
 	
-	_set: function(self, kind, x, y, v) {
+	_set: function(kind, x, y, v) {
 		
-		if(y<0||x<0||y>self.h||x>self.w) return;
+		if(y<0||x<0||y>this.h||x>this.w) return;
 		x = 0 | x; y = 0 | y;
-		self[kind][y * self.w + x] = v;
+		this[kind][y * this.w + x] = v;
 	},
 	
-	get: function(self, x, y) { return self._get("data", x, y); },
-	set: function(self, x, y, v) { return self._set("data", x, y, v); },
-	isDiscovered: function(self, x, y) { return true; },
+	get: function(x, y) { return this._get("data", x, y); },
+	set: function(x, y, v) { return this._set("data", x, y, v); },
+	isDiscovered: function(x, y) { return true; },
 	
-	generate: function(self) {
-		for(var y = 0; y < self.h; y++) {
-			for(var x = 0; x < self.w; x++) {
-				if(x==0||y==0||x==self.w-1||y==self.h-1) self.set(x, y, 1);
+	generate: function() {
+		for(var y = 0; y < this.h; y++) {
+			for(var x = 0; x < this.w; x++) {
+				if(x==0||y==0||x==this.w-1||y==this.h-1) this.set(x, y, 1);
 			}
 		}
-		for(var i = 0; i < 30; i++) self.set(rnd(0, self.w), rnd(0, self.h), 1);
+		for(var i = 0; i < 30; i++) this.set(rnd(0, this.w), rnd(0, this.h), 1);
 	}
 });
 
 
-var LevelObj = new Class({
-	__init__: function(self) {
+var LevelObj = Base.extend({
+	constructor: function() {
 		console.log("LO InIT");
-		self.x = self.y = 0;
+		this.x = this.y = 0;
 	},
-	draw: function(self) {
+	draw: function() {
 		
 	},
-	screenX: function(self) {
-		return self.x * 20;
+	screenX: function() {
+		return this.x * 20;
 	},
-	screenY: function(self) {
-		return self.y * 20;
+	screenY: function() {
+		return this.y * 20;
 	}
 });
 
-var Character = new Class({
-	__extends__: LevelObj,
-	__init__: function(self) {
-		Class.ancestor(Character, '__init__', self);
-		console.log("Ch InIT");
-		self.maxHealth = self.health = 10;
+var Character = LevelObj.extend({
+	constructor: function() {
+		this.base();
+		this.maxHealth = this.health = 10;
    }
 });
 
 var HERO_CLASSES = ["warrior", "priest", "thief", "wizard"];
-var Hero = new Class({
-	__extends__: Character,
-	
-	__init__: function(self) {
-		Class.ancestor(Hero, '__init__', self);
-		console.log("He InIT");
-		self.klass = "warrior";
-		self.race = "human";
-		self.tileName = "Hero" + self.klass.charAt(0).toUpperCase() + self.klass.substring(1);
+var Hero = Character.extend({
+	constructor: function() {
+		this.base();
+		this.klass = "warrior";
+		this.race = "human";
+		this.tileName = "Hero" + this.klass.charAt(0).toUpperCase() + this.klass.substring(1);
 	},
 	
-	draw: function(self) {
-		var x = self.screenX();
-		ctx.drawImage(tiles[self.tileName], self.screenX(), self.screenY());
+	draw: function() {
+		var x = this.screenX();
+		ctx.drawImage(tiles[this.tileName], this.screenX(), this.screenY());
 	}
 });
