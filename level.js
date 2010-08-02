@@ -46,6 +46,15 @@ var Level = Base.extend({
 			this.placeRandomly(this.add(new HealthPotion));
 			this.placeRandomly(this.add(new ManaPotion));
 		}
+		var enemyClasses = [Imp];
+		for(var level = 1; level < 9; level ++) {
+			var n = Math.max(1, (9 - level) / 2 + 1);
+			for(var i = 0; i < n; i++) {
+				var enemy = new (rndc.apply(null, enemyClasses));
+				enemy.initLevel(level);
+				this.placeRandomly(this.add(enemy));
+			}
+		}
 	},
 	
 	placeRandomly: function(levelObj) {
@@ -71,8 +80,12 @@ var Level = Base.extend({
 	},
 	
 	add: function(levelObj) {
-		if(levelObj.kind === Pickup.kind) {
+		if(levelObj.kind === "Pickup") {
 			this.pickups.push(levelObj);
+			return levelObj;
+		}
+		else if(levelObj.kind === "Enemy") {
+			this.chars.push(levelObj);
 			return levelObj;
 		}
 		throw "Unknown kind of levelobj: " + (levelObj.kind.toString());
@@ -80,6 +93,11 @@ var Level = Base.extend({
 	
 	remove: function(levelObj) {
 		var eq = function(obj) { return obj === levelObj; };
-		if(levelObj.kind === Pickup.kind) return spliceMatching(this.pickups, eq);
+		if(levelObj.kind === "Pickup") return spliceMatching(this.pickups, eq);
+		return null;
+	},
+	
+	setAllDiscovered: function() {
+		for(var y = 0; y < this.h; y++) for(var x = 0; x < this.w; x++) this.discover(x, y);
 	}
 });

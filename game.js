@@ -1,7 +1,7 @@
 //if(!window.console) window.console = {log: function(){}};
 var canvas, ctx;
 var level;
-var hero = new Hero();
+var hero;
 var actions = {
 	"move se":	function(){return moveHero(+1,+1)},
 	"move s":	function(){return moveHero(+0,+1)},
@@ -12,6 +12,9 @@ var actions = {
 	"move nw":	function(){return moveHero(-1,-1)},
 	"move n":	function(){return moveHero(+0,-1)},
 	"move ne":	function(){return moveHero(+1,-1)},
+	"health":	function(){hero.drinkHealth()},
+	"mana":		function(){hero.drinkMana()},
+	"reveal":	function(){level.setAllDiscovered();update();draw()},
 	"null":		null
 };
 var keymap = {
@@ -28,7 +31,10 @@ var keymap = {
 	50:		"slot 2", // num2
 	51:		"slot 3", // num3
 	52:		"slot 4", // num4
-	53:		"slot 5", // num3
+	53:		"slot 5", // num3,
+	72:		"health", // H
+	77:		"mana", // M
+	82:		"reveal",
 	0:		null
 };
 
@@ -62,14 +68,14 @@ function moveHero(dx, dy) {
 function _underHero(p) {
 	return (p.x == hero.x && p.y == hero.y);
 }
+var pickupUnderHero;
 
 function update() {
-	var pickupUnderHero = _.detect(level.pickups, _underHero);
-	if(pickupUnderHero) {
-		if(pickupUnderHero.canAutoPickup) {
-			pickupUnderHero.onPickup(hero);
-			level.remove(pickupUnderHero);
-		}
+	pickupUnderHero = _.detect(level.pickups, _underHero);
+	if(pickupUnderHero && pickupUnderHero.canAutoPickup) {
+		pickupUnderHero.onPickup(hero);
+		level.remove(pickupUnderHero);
+		pickupUnderHero = null;
 	}
 	for(var xx = -1; xx <= 1; xx++) {
 		for(var yy = -1; yy <= 1; yy++) {
@@ -94,7 +100,7 @@ function update() {
 				"awesomely"
 			), hero.level) +
 			" " +
-			sprintf("You're going to need %d XP to get to level %d.", hero.levelXp, hero.level + 1)
+			sprintf("You're going to need <u>%d XP</u> to get to level %d.", hero.levelXp, hero.level + 1)
 		);
 	}
 }
@@ -102,13 +108,20 @@ function update() {
 function keyPress(evt) {
 	var key = evt.keyCode;
 	var action = keymap[key];
-	log("Key:", key, "mapped to:", action);
+	//log("Key:", key, "mapped to:", action);
 	var func = actions[action];
 	if(func) func();
 }
 
 function startGame() {
+	var gameId = (0 | (+new Date() * 1000));
+	addMessage("Game ID " + gameId);
+	MSeed(gameId);
+	Marsaglia();
+	hero = new Hero();
 	newLevel();
+	addMessage("Welcome, brave adventurer! You are a <u>" + hero.klass + "</u> of the <u>" + hero.getRaceAdj() + "</u> persuasion. Best of luck!");
+	
 	update();
 	draw();
 }
@@ -126,11 +139,17 @@ function addMessage(message) {
 	logDiv.scrollTop += 900;
 }
 
+function doubleSizeOn() {
+	canvas.className = "doublesize";
+	addMessage("Whoomph! Everything seems... bigger.");
+}
+
 function init() {
 	canvas = document.getElementById("game");
 	document.addEventListener("keyup", keyPress, false);
 	ctx = canvas.getContext('2d');
 	loadTiles();
+	addMessage("If you like, <a href=\"#\" onclick=\"doubleSizeOn();return false\">click here</a> to enable 2x scaling.");
 	
 	var waitForTileLoad;
 	(waitForTileLoad = function() {

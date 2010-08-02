@@ -2,8 +2,9 @@ td{vertical-align:top}
 body {
 	background:#333;
 	color:#ccc;
-	font:9pt georgia;
+	font:9pt "warnock pro", palatino, "palatino linotype", georgia;
 }
+body,a{color:#ccc}
 #log {
 	width:200px;
 	height:400px;
@@ -17,4 +18,8 @@ body {
 #game.doublesize {
 	image-rendering: -moz-crisp-edges;
 	width: 800px
+}
+#log u {
+	text-decoration: none;
+	color: #fff4ce
 }
