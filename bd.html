@@ -7,8 +7,34 @@
 <script type="text/javascript" src="tiledata.js"></script>
 <script type="text/javascript" src="tiles.js"></script>
 <script type="text/javascript" src="game.js"></script>
+<style type="text/css">
+td{vertical-align:top}
+body {
+	background:#333;
+	color:#ccc;
+	font:9pt georgia;
+}
+#log {
+	width:200px;
+	height:400px;
+	overflow-x:auto;
+	overflow-y:scroll;
+}
+#log div {
+	margin-bottom:1em
+}
+#game{border:1px dotted white}
+</style>
 </head>
 <body onload="init()">
-	<canvas id="game" width="480" height="480" style="border:1px dotted black;height:800px"></canvas>
+	<table>
+		<tr>
+			<td><canvas id="game" width="400" height="400"></canvas></td>
+			<td>
+				<div id="log"></div>
+			</td>
+		</tr>
+	</table>
+	
 </body>
 </html>

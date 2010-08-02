@@ -6,6 +6,7 @@ var Level = Base.extend({
 	},
 	clear: function() {
 		this.data = {};
+		this.discovered = {};
 	},
 	_get: function(kind, x, y) {
 		if(y<0||x<0||y>this.h||x>this.w) return 0;
@@ -22,7 +23,15 @@ var Level = Base.extend({
 	
 	get: function(x, y) { return this._get("data", x, y); },
 	set: function(x, y, v) { return this._set("data", x, y, v); },
-	isDiscovered: function(x, y) { return true; },
+	isDiscovered: function(x, y) { return +(this._get("discovered", x, y)); },
+	discover: function(x, y) {
+		if(y<0||x<0||y>this.h||x>this.w) return false;
+		if(!this.isDiscovered(x, y)) {
+			this._set("discovered", x, y, 1);
+			return true;
+		}
+		return false;
+	},
 	
 	generate: function() {
 		for(var y = 0; y < this.h; y++) {
@@ -37,7 +46,6 @@ var Level = Base.extend({
 
 var LevelObj = Base.extend({
 	constructor: function() {
-		log("LO InIT");
 		this.x = this.y = 0;
 	},
 	draw: function() {

@@ -12,7 +12,7 @@ Base.extend = function(_instance, _static) { // subclass
 	var extend = Base.prototype.extend;
 	
 	// build the prototype
-	Base._prototyping = true;
+	Base._prototyping = 1;
 	var proto = new this;
 	extend.call(proto, _instance);
   proto.base = function() {
