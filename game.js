@@ -12,8 +12,8 @@ var actions = {
 	"move nw":	function(){return moveHero(-1,-1)},
 	"move n":	function(){return moveHero(+0,-1)},
 	"move ne":	function(){return moveHero(+1,-1)},
-	"health":	function(){hero.drinkHealth()},
-	"mana":		function(){hero.drinkMana()},
+	"health":	function(){hero.drinkHealth();update();draw()},
+	"mana":		function(){hero.drinkMana();update();draw()},
 	"reveal":	function(){level.setAllDiscovered();update();draw()},
 	"null":		null
 };
@@ -41,17 +41,78 @@ var keymap = {
 function newLevel() {
 	level = new Level();
 	level.generate();
-	do {
-		hero.x = irnd(0, level.w);
-		hero.y = irnd(0, level.h);
-	} while(level.get(hero.x, hero.y) != 0);
+	level.placeRandomly(hero);
+	
+}
+
+function fight(p1, p2) {
+	_.each((p1.level >= p2.level ? [[p1, p2], [p2, p1]] : [[p2, p1], [p1, p2]]), function(pair) {
+		var attacker = pair[0];
+		var defender = pair[1];
+		if(attacker.health <= 0) return;
+		var dmg = attacker.rollDamage();
+		var dmgType = attacker.getDamageType();
+		var dmgTaken = defender.dealDamage(dmg, dmgType);
+		var msg = sprintf(
+			"The %s %s the %s for <u>%d</u> damage!",
+			attacker.name,
+			rndc("thwonks", "zaps", "hits", "smashes", "bonks", "splats"),
+			defender.name,
+			dmgTaken,
+			dmgType
+		);
+		addMessage(msg);
+	});
+	addMessage(sprintf("(%s HP: %d, %s HP: %d)", p1.name, p1.health, p2.name, p2.health));
+}
+
+function youDie() {
+	hero.isDead = true;
+	hero.health = 0;
+	addRandomMessage(
+		"Unfortunately it seems that you've run out of life.",
+		sprintf(
+			"Whoops! There was a horrible accident involving %s and %s...",
+			rndc("an axe", "a barrage of magic", "mystical forces", "a sharp blade", "something very nasty", "a beguilingly cute little kitten"),
+			rndc("yourself", "your lovely visage", "your abdomen (yes, those are your guts)")
+		),
+		"Aherm... you sort of kicked the bucket there. Better luck next time, eh?"
+	);
+	
 }
 
 function moveHero(dx, dy) {
-	var tile = level.get(hero.x + dx, hero.y + dy);
+	if(hero.isDead) {
+		addRandomMessage(
+			"You're dead. You can't really move around much.",
+			"You're not a ghost, you know.",
+			"Hey, it's not like I wanted you to die. <small>Well, maybe I did. A little.</small>",
+			"Um... you <i>do</i> realize you're lying there in a pool of your own intestines, don't you?"
+		);
+		return;
+	}
+	var newX = hero.x + dx, newY = hero.y + dy;
+	var tile = level.get(newX, newY);
+	var character = level.objectInTile(newX, newY, "Character");
+	if(character) {
+		fight(hero, character);
+		if(character.health < 1) {
+			var xpGain = character.level + (Math.max(0, character.level - hero.level) * 3);
+			addMessage("The " + character.name + " is " + rndc("dead", "vanquished", "smashed into tiny bits", "an icky pool on the floor", "mush") + "! Hooray! The hero (that's you) gains <u>" + xpGain + "</u> XP!");
+			if(hero.health <= 0) {
+				addMessage("Second wind! (You almost died there...)");
+				hero.health = 1;
+			}
+			hero.xp += xpGain;
+			level.remove(character);
+		}
+		update();
+		draw();
+		return;
+	}
 	if(tile == 0) {
-		hero.x += dx;
-		hero.y += dy;
+		hero.x = newX;
+		hero.y = newY;
 		update();
 		draw();
 	} else {
@@ -71,6 +132,14 @@ function _underHero(p) {
 var pickupUnderHero;
 
 function update() {
+	pickupUnderHero = false;
+	if(hero.isDead) return;
+	if(hero.health < 1) {
+		youDie();
+		return;
+	}
+	
+
 	pickupUnderHero = _.detect(level.pickups, _underHero);
 	if(pickupUnderHero && pickupUnderHero.canAutoPickup) {
 		pickupUnderHero.onPickup(hero);
@@ -114,8 +183,7 @@ function keyPress(evt) {
 }
 
 function startGame() {
-	var nao = (+new Date() * 1000);
-	var gameId = (0 | nao);
+	var gameId = Math.floor(+new Date());
 	addMessage("Game ID " + gameId);
 	MSeed(gameId);
 	Marsaglia();

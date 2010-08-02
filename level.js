@@ -72,10 +72,10 @@ var Level = Base.extend({
 		levelObj.y = py;
 	},
 	
-	objectInTile: function(x, y) {
+	objectInTile: function(x, y, filter) {
 		var located = function(o) { return o.x == x && o.y == y; }, obj;
-		if((obj = _.detect(this.pickups, located))) return obj;
-		if((obj = _.detect(this.chars, located))) return obj;
+		if(!filter || filter == "Pickup") if((obj = _.detect(this.pickups, located))) return obj;
+		if(!filter || filter == "Character") if((obj = _.detect(this.chars, located))) return obj;
 		return null;
 	},
 	
@@ -94,6 +94,7 @@ var Level = Base.extend({
 	remove: function(levelObj) {
 		var eq = function(obj) { return obj === levelObj; };
 		if(levelObj.kind === "Pickup") return spliceMatching(this.pickups, eq);
+		if(levelObj.kind === "Enemy") return spliceMatching(this.chars, eq);
 		return null;
 	},
 	

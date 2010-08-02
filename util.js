@@ -2,9 +2,8 @@ var marV = 362436069;
 var marU = 521288629;
 
 function MSeed(s) {
-	s = 0 | s;
-	marV = (s >> 16) & 0xFFFF;
-	marU = s & 0xFFFF;
+	marV = s ^ 0x2b00b1e5;
+	marU = s ^ 0xbabe2bed;
 }
 
 function Marsaglia() {

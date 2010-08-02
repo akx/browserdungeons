@@ -1,6 +1,7 @@
 var Character = LevelObj.extend({
 	name: "(thing)",
 	kind: "Character",
+	isHero: false,
 	
 	constructor: function() {
 		this.base();
@@ -12,6 +13,8 @@ var Character = LevelObj.extend({
 		this.manaPotions = 0;
 		this.magicResist = 0.0;
 		this.physicalResist = 0.0;
+		this.damage = 1;
+		this.isDead = false;
 	},
 	calculateLevelXp: function() {
 		this.levelXp = 0 | (15 + Math.pow(this.level, 1.3377) * 30);
@@ -35,6 +38,7 @@ var Character = LevelObj.extend({
 		else if(type == "physical") amount *= (1.0 - this.physicalResist);
 		else throw "Hissy fit: Damage type " + type + " unknown.";
 		this.health = Math.max(this.health - amount, 0);
+		return amount;
 	},
 	
 	draw: function() {
@@ -54,6 +58,23 @@ var Character = LevelObj.extend({
 		else if(levelDelta <= 4) ctx.fillStyle = "orange";
 		else ctx.fillStyle = "red";
 		ctx.fillText(this.level, sx, sy);
+	},
+	
+	rollDamage: function() {
+		return Math.ceil(rnd(0.9 * this.damage, 1.1 * this.damage));
+	},
+	
+	getDamageType: function() {
+		return (this.damageType || "physical");
+	},
+	
+	initLevel:	function(level) {
+		this.level = level;
+		var h = rnd((this.level + 1) * 10, (this.level + 1) * 15);
+		if(this.isHero) h *= 1.03;
+		this.health = this.maxHealth = h;
+		this.damage = Math.floor(Math.pow(rnd(1 + this.level, 1 + this.level * 1.4), (this.isHero ? 1.05 : 1.02)));
+		this.calculateLevelXp();
 	}
 });
 
@@ -67,6 +88,7 @@ var raceAdjs = {
 	"orc":		"orcish"
 }
 var Hero = Character.extend({
+	isHero: true,
 	constructor: function() {
 		this.base();
 		var k = this.klass = rndc.apply(null, HERO_CLASSES);
@@ -75,10 +97,23 @@ var Hero = Character.extend({
 		this.nSlots = (k == "wizard" ? 5 : 4);
 		this.slots = [];
 		for(var i = 0; i < this.nSlots; i++) this.slots.push({id: i + 1, item: null});
-		this.calculateLevelXp();
+		this.initLevel(1);
+		
+		this.name = this.getRaceAdj() + " " + k;
+	},
+	
+	draw: function() {
+		var tile = (this.isDead ? tiles.Blood : tiles[this.tileName]);
+		ctx.drawImage(tile, this.screenX(), this.screenY());
 	},
 	
 	drinkHealth: function() {
+		if(this.isDead) {
+			return addRandomMessage(
+				"You do realize that drinking this health potion would have been a great idea a couple turns ago, right?",
+				"Unfortunately health potions don't really work retroactively."
+			);
+		}
 		if(this.healthPotions > 0) {
 			if(this.health >= this.maxHealth) {
 				return addRandomMessage(
@@ -101,6 +136,12 @@ var Hero = Character.extend({
 	},
 
 	drinkMana: function() {
+		if(this.isDead) {
+			return addRandomMessage(
+				"As much as I understand that you need to refill your magical might to haunt on your former foes... nope, sorry. Can't do that.",
+				"The <i>Academia Arcanum</i> has expressly prohibited experiments with cadavers and mana potions."
+			);
+		}
 		if(this.manaPotions > 0) {
 			if(this.mana >= this.maxMana) {
 				return addRandomMessage(
@@ -131,10 +172,7 @@ var Hero = Character.extend({
 
 var Enemy = Character.extend({
 	kind: "Enemy",
-	initLevel:	function(level) {
-		this.level = level;
-		this.health = this.maxHealth = rnd((this.level + 1) * 10, (this.level + 1) * 15);
-	},
+	
 	
 	draw: function() {
 		this.base();
