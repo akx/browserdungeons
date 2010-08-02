@@ -3,7 +3,10 @@
 var tiles = {};
 function loadTiles() {
 	_.each(window._tileData, function(tileData, tile) {
-		tiles[tile] = _.extend(new Image(), {src: 'data:image/png;base64,'+tileData, onLoad: function() {console.log("OK: " + tile);}});
+		tiles[tile] = _.extend(new Image(), {
+			src: 'data:image/png;base64,'+tileData,
+			onLoad: function() {log("OK: " + tile);
+		}});
 	});
 	delete window._tileData;
 	/*

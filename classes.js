@@ -37,7 +37,7 @@ var Level = Base.extend({
 
 var LevelObj = Base.extend({
 	constructor: function() {
-		console.log("LO InIT");
+		log("LO InIT");
 		this.x = this.y = 0;
 	},
 	draw: function() {
