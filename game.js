@@ -114,7 +114,8 @@ function keyPress(evt) {
 }
 
 function startGame() {
-	var gameId = (0 | (+new Date() * 1000));
+	var nao = (+new Date() * 1000);
+	var gameId = (0 | nao);
 	addMessage("Game ID " + gameId);
 	MSeed(gameId);
 	Marsaglia();
