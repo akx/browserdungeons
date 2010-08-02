@@ -1,0 +1,16 @@
+td{vertical-align:top}
+body {
+	background:#333;
+	color:#ccc;
+	font:9pt georgia;
+}
+#log {
+	width:200px;
+	height:400px;
+	overflow-x:auto;
+	overflow-y:scroll;
+}
+#log div {
+	margin-bottom:1em
+}
+#game{border:1px dotted white}
