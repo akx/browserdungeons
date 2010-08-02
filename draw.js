@@ -139,6 +139,7 @@ function drawLevel() {
 			ctx.fillRect(cx, cy, 20, 20);
 		}
 	}
+	_.each(level.doodads, _drawObj);
 	_.each(level.pickups, _drawObj);
 	_.each(level.chars, _drawObj);
 	hero.draw();

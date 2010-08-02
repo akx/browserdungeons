@@ -73,8 +73,8 @@ var Character = LevelObj.extend({
 	
 	initLevel:	function(level) {
 		this.level = level;
-		var h = rnd((this.level + 1) * 10, (this.level + 1) * 15);
-		if(this.isHero) h *= 1.03;
+		var l = level + 1;
+		var h = Math.pow(rnd(l * 9, l * 11), 1.02) * (this.isHero ? 1.03 : 1);
 		this.health = this.maxHealth = h;
 		this.damage = Math.floor(Math.pow(rnd(1 + this.level, 1 + this.level * 1.4), (this.isHero ? 1.05 : 1.02)));
 		this.calculateLevelXp();
@@ -192,4 +192,10 @@ var Enemy = Character.extend({
 var Imp = Enemy.extend({
 	tileName: "Imp",
 	name: "imp"
+});
+
+var Warlock = Enemy.extend({
+	tileName: "Warlock",
+	name: "warlock",
+	damageType: "magic"
 });
