@@ -218,6 +218,11 @@ function doubleSizeOn() {
 	addMessage("Whoomph! Everything seems... bigger.");
 }
 
+function doubleSizeOff() {
+	canvas.className = "";
+	addMessage("Where did it go?");
+}
+
 
 function init() {
 	writeHTML();

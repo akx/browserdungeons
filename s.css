@@ -16,8 +16,10 @@ body,a{color:#ccc}
 	margin-bottom:1em
 }
 #game.doublesize {
+	width: 800px;
+	height: 960px;
+	interpolation-mode: nearest-neighbor;
 	image-rendering: -moz-crisp-edges;
-	width: 800px
 }
 #log u {
 	text-decoration: none;
