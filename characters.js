@@ -1,3 +1,5 @@
+
+
 var Character = LevelObj.extend({
 	name: "(thing)",
 	kind: "Character",
@@ -15,6 +17,7 @@ var Character = LevelObj.extend({
 		this.physicalResist = 0.0;
 		this.damage = 1;
 		this.isDead = false;
+		this.klass = this.race = null;
 	},
 	calculateLevelXp: function() {
 		this.levelXp = 0 | (15 + Math.pow(this.level, 1.3377) * 30);
@@ -22,15 +25,17 @@ var Character = LevelObj.extend({
 	levelUp: function() {
 		if(this.xp >= this.levelXp) {
 			this.xp -= this.levelXp;
-			this.level++;
+			this.level ++;
 			this.calculateLevelXp();
+			var newDmg = this.damageForLevel(this.level);
+			this.damage = newDmg;
 		}
 	},
 	addHealth: function(hp) {
-		this.health = Math.floor(Math.min(this.maxHealth, this.health + hp));
+		this.health = (Math.min(this.maxHealth, this.health + hp));
 	},
 	addMana: function(mp) {
-		this.mana = Math.floor(Math.min(this.maxMana, this.mana + mp));
+		this.mana = (Math.min(this.maxMana, this.mana + mp));
 	},
 	addXp: function(xp) {
 		this.xp += xp;
@@ -71,12 +76,24 @@ var Character = LevelObj.extend({
 		return (this.damageType || "physical");
 	},
 	
+	healthForLevel: function(level) {
+		var l = level + 1;
+		var h = Math.pow(rnd(l * 9, l * 11), 1.024);
+		if(this.race == "elf") h *= 1.1;
+		return h;
+	},
+
+	damageForLevel:	function (level) {
+		var dmg = Math.floor(Math.pow(rnd(1 + level, 1 + level * 1.4), (this.isHero ? 1.1 : 1.05)));
+		if(this.race === "orc") dmg *= 1.1;
+		return dmg;
+	},
+	
 	initLevel:	function(level) {
 		this.level = level;
-		var l = level + 1;
-		var h = Math.pow(rnd(l * 9, l * 11), 1.02) * (this.isHero ? 1.03 : 1);
-		this.health = this.maxHealth = h;
-		this.damage = Math.floor(Math.pow(rnd(1 + this.level, 1 + this.level * 1.4), (this.isHero ? 1.05 : 1.02)));
+		this.health = this.maxHealth = this.healthForLevel(level);
+		this.damage = this.damageForLevel(level);
+		
 		this.calculateLevelXp();
 	}
 });

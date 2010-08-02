@@ -43,9 +43,11 @@ var Level = Base.extend({
 			}
 		}
 		for(var i = 0; i < 120; i++) this.set(rnd(0, this.w), rnd(0, this.h), 1);
-		for(var i = 0; i < 10; i++) {
+		for(var i = 0; i < 6; i++) {
 			this.placeRandomly(this.add(new HealthPotion));
 			this.placeRandomly(this.add(new ManaPotion));
+			this.placeRandomly(this.add(new HealthBoost));
+			this.placeRandomly(this.add(new ManaBoost));
 		}
 		var enemyClasses = [Imp, Warlock];
 		for(var level = 1; level < 9; level ++) {

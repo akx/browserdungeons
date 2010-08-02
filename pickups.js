@@ -41,3 +41,35 @@ var ManaPotion = Pickup.extend({
 		);
 	}
 });
+
+var HealthBoost = Pickup.extend({
+	canAutoPickup:	true,
+	tileName:		"HPBoost",
+	
+	onPickup: function(picker) {
+		picker.maxHealth += 3;
+		picker.xp += 2;
+		addRandomMessage(
+			"Whoa! You feel stronger than ever! Well... maybe not ever, but anyway!",
+			"Package full of veggies makes " + (picker.klass || "thing") + " strooooong!",
+			"Your muscles grow visibly more muscular.",
+			"Your skin seems a little bit tougher. Must've been some kind of anti-cosmetic."
+		);
+	}
+});
+
+var ManaBoost = Pickup.extend({
+	canAutoPickup:	true,
+	tileName:		"MPBoost",
+	
+	onPickup: function(picker) {
+		picker.maxMana += 3;
+		picker.xp += 2;
+		addRandomMessage(
+			"Oooh, that tickles!",
+			"More mana? Like you really needed that...",
+			"You feel a strange sort of tingling under your skin (and clothes, for that matter).",
+			"A cosmic magical force courses through you for a moment. Then it stops."
+		);
+	}
+});
