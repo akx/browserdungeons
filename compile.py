@@ -9,8 +9,8 @@ for compiler in compilerJars:
 else:
 	print "No closure compiler found. Dying."
 	sys.exit(1)
-coreJs = ["underscore.js", "Base.js", "classes.js", "util.js"]
-skipJs = ["tiledata.js"]
+coreJs = ["tiledata.js", "underscore.js", "Base.js", "classes.js", "util.js"]
+skipJs = []
 finalJs = ["game.js"]
 otherJs = sorted(set(f for f in glob.glob("*.js") if f[0] != "_") - set(coreJs) - set(skipJs) - set(finalJs))
 allJs = coreJs + otherJs + finalJs
