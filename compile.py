@@ -17,10 +17,10 @@ jsSize = sum(os.stat(f).st_size for f in allJs)
 cmdLine = [f"java -jar {compiler}"]
 for js in allJs:
     cmdLine.append(f"--js {js}")
-cmdLine.append("--js_output_file _compiled.js")
+cmdLine.append("--js_output_file compiled.js")
 cmdLine = " ".join(cmdLine)
 os.system(cmdLine)
-cSize = os.stat("_compiled.js").st_size
+cSize = os.stat("compiled.js").st_size
 
 ratio = cSize / float(jsSize) * 100
 print(f"Original: {jsSize} bytes")
